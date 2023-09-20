@@ -1,10 +1,11 @@
 ﻿using InstanceEnums;
+using InstanceEnums.PolyEnum;
 using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace TypedEnums
 {
-    public abstract class PolyEnum<T> where T : PolyEnum<T>, new()
+    public abstract class PolyEnum<T> : PolyEnumBase where T : PolyEnum<T>, new()
     {
         protected static InterfaceValueFactory interfaceValueFactory = new InterfaceValueFactory();
 
@@ -29,6 +30,14 @@ namespace TypedEnums
         {
             _instance = _instance ?? new T();
             return _instance;
+        }
+
+        public static TypedEnumMember GetInstance(int? enumValue)
+        {
+            Get();
+            return enumValue == null ?
+                _instances["INullRef"] :
+                _indexedInstances[enumValue.Value];
         }
 
         public static E Get<E>() where E : class
