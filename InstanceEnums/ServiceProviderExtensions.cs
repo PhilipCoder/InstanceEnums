@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Concurrent;
 using System.Data;
 
@@ -13,9 +14,21 @@ namespace InstanceEnums
             return (T)serviceProvider.GetServiceForEnum(typeof(T), typeof(E));
         }
 
-        public static T GetServiceForEnum<T>(this ServiceProvider serviceProvider, Type enumType)
+        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumType, string enumValue)
         {
-            return (T)serviceProvider.GetServiceForEnum(typeof(T), enumType);
+            var enumMemberType = enumType.BaseType.GetMethod("GetInstance").Invoke(null, new object[] { (dynamic)enumValue });
+            return serviceProvider.GetServiceForEnum(serviceType, enumMemberType.GetType());
+        }
+
+        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumType, int enumValue)
+        {
+            var enumMemberType = enumType.BaseType.GetMethod("GetInstance").Invoke(null, new object[] { (dynamic)enumValue });
+            return serviceProvider.GetServiceForEnum(serviceType, enumMemberType.GetType());
+        }
+
+        public static T GetServiceForEnum<T>(this ServiceProvider serviceProvider, Type enumMemberType)
+        {
+            return (T)serviceProvider.GetServiceForEnum(typeof(T), enumMemberType);
         }
 
         public static T GetServiceForEnum<T>(this ServiceProvider serviceProvider, object enumInstance)
@@ -26,15 +39,15 @@ namespace InstanceEnums
             return (T)serviceProvider.GetServiceForEnum(typeof(T), enumType);
         }
 
-        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumType)
+        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumMemberType)
         {
             var services = serviceProvider.GetServices(serviceType);
 
-            var serviceEnumIndexKey = $"{serviceType.FullName}{enumType.FullName}";
+            var serviceEnumIndexKey = $"{serviceType.FullName}{enumMemberType.FullName}";
 
             return _serviceEnumIndex.ContainsKey(serviceEnumIndexKey) ? 
                 GetServiceForEnumType(services, serviceEnumIndexKey) : 
-                GetServiceForEnumType(serviceType, enumType, services, serviceEnumIndexKey);
+                GetServiceForEnumType(serviceType, enumMemberType, services, serviceEnumIndexKey);
         }
 
         private static object GetServiceForEnumType(IEnumerable<object> services, string serviceFullTypeName)
@@ -42,19 +55,19 @@ namespace InstanceEnums
             return services.FirstOrDefault(x => x.GetType().FullName == serviceFullTypeName);
         }
 
-        private static object GetServiceForEnumType(Type serviceType, Type enumType, IEnumerable<object> services, string serviceEnumIndexKey)
+        private static object GetServiceForEnumType(Type serviceType, Type enumMemberType, IEnumerable<object> services, string serviceEnumIndexKey)
         {
-            var enumInterfaces = enumType.GetInterfaces();
+            var enumInterfaces = enumMemberType.GetInterfaces();
 
             var parentInterface = enumInterfaces.FirstOrDefault();
 
-            var service = services.FirstOrDefault(x => x.GetType().IsAssignableTo(enumType)) ?? services.FirstOrDefault(x => x.GetType().IsAssignableTo(parentInterface));
+            var service = services.FirstOrDefault(x => x.GetType().IsAssignableTo(enumMemberType)) ?? services.FirstOrDefault(x => x.GetType().IsAssignableTo(parentInterface));
 
             if (service == null)
             {
                 var exceptionMessage = parentInterface != null ?
-                    $"No registered serivce found for type {serviceType.FullName} implementing enums ${enumType.FullName} or {parentInterface.GetType().FullName}." :
-                    $"No registered serivce found for type {serviceType.FullName} implementing enums ${enumType.FullName}.";
+                    $"No registered serivce found for type {serviceType.FullName} implementing enums ${enumMemberType.FullName} or {parentInterface.GetType().FullName}." :
+                    $"No registered serivce found for type {serviceType.FullName} implementing enums ${enumMemberType.FullName}.";
                 throw new KeyNotFoundException(exceptionMessage);
             }
 
