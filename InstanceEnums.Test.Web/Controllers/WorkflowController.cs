@@ -1,7 +1,7 @@
 using InstanceEnums.Test.Web.Enums;
 using InstanceEnums.Test.Web.Model;
 using Microsoft.AspNetCore.Mvc;
-using static InstanceEnums.Test.Web.Enums.DiagnosisType;
+using InstanceEnums.Test.Web.Enums;
 
 namespace InstanceEnums.Test.Web.Controllers
 {
@@ -10,16 +10,16 @@ namespace InstanceEnums.Test.Web.Controllers
     public class WorkflowController : ControllerBase
     {
         [HttpGet("{diagnosisType}")]
-        public string Get(IDiagnosisType diagnosisType)
+        public string Get(DiagnosisTypes.IDiagnosisType diagnosisType)
         {
             return GetDiagnosis((dynamic)diagnosisType);
         }
 
-        private string GetDiagnosis(DiagnosisType.IHighBloodPresure value) {
+        private string GetDiagnosis(DiagnosisTypes.IHighBloodPresure value) {
             return "You are about to burst";
         }
 
-        private string GetDiagnosis(DiagnosisType.ISleepingTooLittle value)
+        private string GetDiagnosis(DiagnosisTypes.ISleepingTooLittle value)
         {
             return "Why so tired?";
         }

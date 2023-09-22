@@ -1,6 +1,7 @@
 ﻿using InstanceEnums.PolyEnum.Extensions;
 using InstanceEnums.PolyEnum.ModelBinding.ModelBinders;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TypedEnums;
 
@@ -8,6 +9,10 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders
 {
     public class EnumModelBinderProvider : IModelBinderProvider
     {
+        public EnumModelBinderProvider()
+        {
+        }
+
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (context == null)
@@ -15,15 +20,16 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var enumType = context.Metadata.ModelType.GetCustomAttribute<InstanceEnumMemberAttribute>()?.EnumType;
+            var enumType = context.Metadata.ModelType.GetParentAttributeInstance<InstanceEnumMemberAttribute>()?.EnumType;
 
             if (enumType != null && enumType.IsSubclassOf(typeof(PolyEnumBase)))
             {
                 return new EnumModelBinder();
             }
-            if (enumType != null && enumType.GetParentAttributeInstance<InstanceEnumMemberAttribute>()!=null)
+            enumType = context.Metadata.ModelType.GetParentInterfaceAttributeInstance<InstanceEnumMemberAttribute>()?.EnumType;
+            if (enumType != null)
             {
-                return new EnumInstanceModelBinder();
+                return new EnumInstanceModelBinder(context.Services);
             }
 
             return null;

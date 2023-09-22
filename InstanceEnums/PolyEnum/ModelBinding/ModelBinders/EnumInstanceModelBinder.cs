@@ -8,9 +8,9 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
     {
         private ServiceProvider _serviceProvider { get; }
 
-        public EnumInstanceModelBinder(ServiceProvider serviceProvider)
+        public EnumInstanceModelBinder(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            _serviceProvider = (ServiceProvider)serviceProvider;
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)

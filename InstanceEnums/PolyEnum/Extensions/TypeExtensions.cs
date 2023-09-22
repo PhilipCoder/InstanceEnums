@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,7 +23,7 @@ namespace InstanceEnums.PolyEnum.Extensions
 
         internal static T GetParentAttributeInstance<T>(this Type type) where T : Attribute
         {
-            while (type.BaseType.FullName != typeof(object).FullName && type.BaseType != null)
+            while (type.BaseType != null && type.BaseType.FullName != typeof(object).FullName )
             {
                 var attributeInstance = type.GetCustomAttribute<T>();
                 if (attributeInstance != null)
@@ -30,6 +31,21 @@ namespace InstanceEnums.PolyEnum.Extensions
                     return attributeInstance;
                 }
                 type = type.BaseType;
+            }
+            return null;
+        }
+
+        internal static T GetParentInterfaceAttributeInstance<T>(this Type type) where T : Attribute
+        {
+            var parentInterfaces = type.GetInterfaces();
+
+            foreach (var parentInterface in parentInterfaces)
+            {
+                var attributeInstance = parentInterface.GetCustomAttribute<T>();
+                if (attributeInstance != null)
+                {
+                    return attributeInstance;
+                }
             }
             return null;
         }
