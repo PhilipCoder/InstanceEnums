@@ -1,10 +1,13 @@
 ﻿using InstanceEnums;
 using InstanceEnums.PolyEnum;
+using InstanceEnums.PolyEnum.ModelBinding;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace TypedEnums
 {
+    [TypeConverter(typeof(SomeWrapperTypeTypeConverter))]
     public abstract class PolyEnum<T> : PolyEnumBase where T : PolyEnum<T>, new()
     {
         protected static InterfaceValueFactory interfaceValueFactory = new InterfaceValueFactory();
@@ -26,6 +29,13 @@ namespace TypedEnums
             PopulateEnumIndexes();
 
         }
+
+        public static string[] GetNames()
+        {
+            Get();
+            return _instances.Keys.ToArray();
+        }
+
         public static T Get()
         {
             _instance = _instance ?? new T();
@@ -55,6 +65,14 @@ namespace TypedEnums
         }
 
         public static TypedEnumMember Get(string enumName)
+        {
+            Get();
+            return enumName == null ?
+                _instances["INullRef"] :
+                _instances[enumName];
+        }
+
+        public static TypedEnumMember GetByName(string enumName)
         {
             Get();
             return enumName == null ?

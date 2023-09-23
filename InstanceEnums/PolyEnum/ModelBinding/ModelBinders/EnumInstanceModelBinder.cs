@@ -20,11 +20,11 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var enumBaseTypeAttribute = bindingContext.ModelType.GetParentAttributeInstance<InstanceEnumMemberAttribute>();
+            var enumBaseType = EnumRegistry.GetEnumType(bindingContext.ModelType);
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-            if (enumBaseTypeAttribute == null)
+            if (enumBaseType == null)
             {
                 return Task.CompletedTask;
             }
@@ -35,10 +35,10 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
 
             if (int.TryParse(value, out int modelValue))
             {
-                bindingContext.Result = ModelBindingResult.Success(_serviceProvider.GetServiceForEnum(bindingContext.ModelType, enumBaseTypeAttribute.EnumType, modelValue));
+                bindingContext.Result = ModelBindingResult.Success(_serviceProvider.GetServiceForEnum(bindingContext.ModelType, enumBaseType, modelValue));
                 return Task.CompletedTask;
             }
-            bindingContext.Result = ModelBindingResult.Success(_serviceProvider.GetServiceForEnum(bindingContext.ModelType, enumBaseTypeAttribute.EnumType, value));
+            bindingContext.Result = ModelBindingResult.Success(_serviceProvider.GetServiceForEnum(bindingContext.ModelType, enumBaseType, value));
             return Task.CompletedTask;
         }
     }

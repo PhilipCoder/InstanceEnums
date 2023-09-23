@@ -1,6 +1,15 @@
+using InstanceEnums;
+using InstanceEnums.PolyEnum.ModelBinding;
 using InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders;
+using InstanceEnums.PolyEnum.Swagger;
+using InstanceEnums.Test.Web.Enums;
 using InstanceEnums.Test.Web.Managers;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using System.ComponentModel;
+using System.Text.Json.Serialization;
+
+EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +22,10 @@ builder.Services.AddControllers(options =>
     options.ModelBinderProviders.Insert(0, new EnumModelBinderProvider());
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c=>{ c.MapType<IDiagnosisManager>(() => new OpenApiSchema { Type = "string", Format = "date" }); });
+builder.Services.AddSwaggerGen(c=>{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Document Conversion API", Version = "v1" });
+    c.AddInstanceEnums();
+});
 
 var app = builder.Build();
 

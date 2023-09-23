@@ -8,13 +8,10 @@ namespace InstanceEnums
 
         public int Value { get; }
 
-        public Type EnumType { get; set; }
-
-        public InstanceEnumMemberAttribute([CallerMemberName] string name = null, int value = 0, Type enumType = null)
+        public InstanceEnumMemberAttribute([CallerMemberName] string name = null, int value = 0)
         {
             Name = name;
             Value = value;
-            EnumType = enumType;
         }
     }
 }

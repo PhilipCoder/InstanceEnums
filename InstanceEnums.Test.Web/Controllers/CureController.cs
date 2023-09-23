@@ -8,10 +8,10 @@ namespace InstanceEnums.Test.Web.Controllers
     [Route("[controller]")]
     public class CureController : ControllerBase
     {
-        [HttpGet("{diagnosisType}")]
-        public string Get(IDiagnosisManager diagnosisManager)
-        {
-            return diagnosisManager.GetFix();
-        }
+        //[HttpGet("{diagnosisType}")]
+        //public string Get(IDiagnosisManager diagnosisManager)
+        //{
+        //    return diagnosisManager.GetFix();
+        //}
     }
 }

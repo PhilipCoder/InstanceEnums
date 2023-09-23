@@ -2,6 +2,8 @@ using InstanceEnums.Test.Web.Enums;
 using InstanceEnums.Test.Web.Model;
 using Microsoft.AspNetCore.Mvc;
 using InstanceEnums.Test.Web.Enums;
+using InstanceEnums.PolyEnum.ModelBinding;
+using System.ComponentModel;
 
 namespace InstanceEnums.Test.Web.Controllers
 {
@@ -9,8 +11,9 @@ namespace InstanceEnums.Test.Web.Controllers
     [Route("[controller]")]
     public class WorkflowController : ControllerBase
     {
+        [TypeConverter(typeof(SomeWrapperTypeTypeConverter))]
         [HttpGet("{diagnosisType}")]
-        public string Get(DiagnosisTypes.IDiagnosisType diagnosisType)
+        public string Get( DiagnosisTypes.IDiagnosisType diagnosisType)
         {
             return GetDiagnosis((dynamic)diagnosisType);
         }
@@ -24,11 +27,15 @@ namespace InstanceEnums.Test.Web.Controllers
             return "Why so tired?";
         }
 
-        // [Route("one")]
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public int Get()
-        //{
-        //    return 1;
-        //}
+        private string GetDiagnosis(DiagnosisTypes.IDiagnosisType value)
+        {
+            return "I don't know what is wrong";
+        }
+
+    }
+
+    public enum Numbers
+    {
+        one, two, three, four, five
     }
 }

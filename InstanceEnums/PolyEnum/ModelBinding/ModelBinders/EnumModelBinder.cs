@@ -18,7 +18,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var enumType = bindingContext.ModelType.GetCustomAttribute<InstanceEnumMemberAttribute>()?.EnumType;
+            var enumType = EnumRegistry.GetEnumType(bindingContext.ModelType);
 
             var modelName = bindingContext.ModelName;
 
@@ -45,7 +45,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
                 return Task.CompletedTask;
             }
 
-            var fromStringResult = bindingContext.ModelType.GetMethod("Get").Invoke(null, new object[] { (dynamic)value });
+            var fromStringResult = enumType.GetMethod("GetByName", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Invoke(null, new object[] { (dynamic)value });
             bindingContext.Result = ModelBindingResult.Success(fromStringResult);
             return Task.CompletedTask;
 

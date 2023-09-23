@@ -20,13 +20,13 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var enumType = context.Metadata.ModelType.GetParentAttributeInstance<InstanceEnumMemberAttribute>()?.EnumType;
+            var enumType = EnumRegistry.GetEnumType(context.Metadata.ModelType);
 
             if (enumType != null && enumType.IsSubclassOf(typeof(PolyEnumBase)))
             {
                 return new EnumModelBinder();
             }
-            enumType = context.Metadata.ModelType.GetParentInterfaceAttributeInstance<InstanceEnumMemberAttribute>()?.EnumType;
+            enumType = EnumRegistry.GetEnumType(context.Metadata.ModelType);
             if (enumType != null)
             {
                 return new EnumInstanceModelBinder(context.Services);

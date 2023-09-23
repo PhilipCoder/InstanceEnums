@@ -14,6 +14,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestToInteger()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var truckInstance = Vehicles.Get<Vehicles.ITruck>();
             var oldInstance = AgeGroups.Get<AgeGroups.IOld>();
 
@@ -27,6 +28,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestToString()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var truckInstance = Vehicles.Get<Vehicles.ITruck>();
             var oldInstance = AgeGroups.Get<AgeGroups.IOld>();
 
@@ -37,6 +39,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestFromInt()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             Assert.Equal(Convert.ToInt32(Vehicles.Get(0)), Convert.ToInt32(Vehicles.Get<Vehicles.ICar>()));
             Assert.Equal(Convert.ToInt32(Vehicles.Get(1)), Convert.ToInt32(Vehicles.Get<Vehicles.IBike>()));
             Assert.Equal(Convert.ToInt32(Vehicles.Get(2)), Convert.ToInt32(Vehicles.Get<Vehicles.ITruck>()));
@@ -45,6 +48,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestFromString()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             Assert.Equal(Vehicles.Get("ICar"), (TypedEnumMember)Vehicles.Get<Vehicles.ICar>());
             Assert.Equal(Vehicles.Get("IBike"), (TypedEnumMember)Vehicles.Get<Vehicles.IBike>());
             Assert.Equal(Vehicles.Get("ITruck"), (TypedEnumMember)Vehicles.Get<Vehicles.ITruck>());
@@ -53,6 +57,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestOverloading()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var valueCalculator = new ValueCalculator();
 
             Assert.Equal("$1400", valueCalculator.CalculateCost(Vehicles.Get<Vehicles.ICar>()));
@@ -64,6 +69,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestOverloadingDynamic()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var valueCalculator = new ValueCalculator();
 
             string getValues(Vehicles.IVehicle vehicle)
@@ -80,6 +86,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestDIInterface()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var services = new ServiceCollection();
             services.AddScoped<IVehiclePriceCalculator, VehiclePriceCalculator>();
             services.AddScoped<IVehiclePriceCalculator, NullPriceCalculator>();
@@ -103,6 +110,7 @@ namespace InstanceEnums.Tests
         [Fact]
         public void TestDINullInterface()
         {
+            EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var services = new ServiceCollection();
             services.AddScoped<IVehiclePriceCalculator, VehiclePriceCalculator>();
             services.AddScoped<IVehiclePriceCalculator, NullPriceCalculator>();

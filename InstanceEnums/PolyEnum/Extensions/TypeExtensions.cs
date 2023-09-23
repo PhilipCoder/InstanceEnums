@@ -23,13 +23,15 @@ namespace InstanceEnums.PolyEnum.Extensions
 
         internal static T GetParentAttributeInstance<T>(this Type type) where T : Attribute
         {
-            while (type.BaseType != null && type.BaseType.FullName != typeof(object).FullName )
+            while (true)
             {
                 var attributeInstance = type.GetCustomAttribute<T>();
                 if (attributeInstance != null)
                 {
                     return attributeInstance;
                 }
+                if (type.BaseType == null || type.FullName == typeof(object).FullName)
+                    break;
                 type = type.BaseType;
             }
             return null;
@@ -64,7 +66,7 @@ namespace InstanceEnums.PolyEnum.Extensions
             return null;
         }
 
-        internal static bool HasSameName(this Type type, Type typeB) 
+        internal static bool HasSameName(this Type type, Type typeB)
         {
             return type.FullName == typeB.FullName;
         }
