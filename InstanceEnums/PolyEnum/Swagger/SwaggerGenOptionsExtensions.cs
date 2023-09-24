@@ -9,14 +9,10 @@ namespace InstanceEnums.PolyEnum.Swagger
         public static void AddInstanceEnums(this SwaggerGenOptions swaggerGenOptions)
         {
             foreach (var enumType in EnumRegistry.EnumMappings.Keys) 
-            {
                 swaggerGenOptions.MapType(enumType, () => new OpenApiSchema { Type = "string" });
-            };
 
             foreach (var baseService in ServiceProviderExtensions.ServiceTypes)
-            { 
                 swaggerGenOptions.MapType(baseService, () => new OpenApiSchema { Type = "string" });
-            };
 
             swaggerGenOptions.ParameterFilter<EnumParamOperationsFilter>();
         }

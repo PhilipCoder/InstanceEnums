@@ -1,5 +1,5 @@
 using InstanceEnums.Test.Web.Enums;
-using InstanceEnums.Test.Web.Managers;
+using InstanceEnums.Test.Web.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InstanceEnums.Test.Web.Controllers
@@ -8,10 +8,10 @@ namespace InstanceEnums.Test.Web.Controllers
     [Route("[controller]")]
     public class CureController : ControllerBase
     {
-        [HttpGet("{diagnosisManager}")]
-        public string Get(IDiagnosisManager diagnosisManager)
+        [HttpGet("{diagnosisManager}/{ageGroup}")]
+        public string Get(IMedicationService diagnosisManager, AgeGroups.IAgeGroup ageGroup)
         {
-            return diagnosisManager.GetFix();
+            return diagnosisManager.GetPrescription((dynamic)ageGroup);
         }
     }
 }

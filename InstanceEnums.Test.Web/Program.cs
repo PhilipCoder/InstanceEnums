@@ -1,22 +1,20 @@
 using InstanceEnums;
-using InstanceEnums.PolyEnum.ModelBinding;
 using InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders;
 using InstanceEnums.PolyEnum.Swagger;
 using InstanceEnums.Test.Web.Enums;
-using InstanceEnums.Test.Web.Managers;
-using Microsoft.Extensions.Options;
+using InstanceEnums.Test.Web.ServiceContracts;
+using InstanceEnums.Test.Web.Services;
 using Microsoft.OpenApi.Models;
-using System.ComponentModel;
-using System.Text.Json.Serialization;
 
 EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
+EnumRegistry.RegisterEnum<AgeGroups, AgeGroups.IAgeGroup>();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.RegisterEnumServiceScoped<IDiagnosisManager, HighBloodPresureManager>();
-builder.Services.RegisterEnumServiceScoped<IDiagnosisManager, SleepingTooLittleManager>();
-builder.Services.RegisterEnumServiceScoped<IDiagnosisManager, DiagnosisManager>();
+builder.Services.RegisterEnumServiceScoped<IMedicationService, InsomniaMedicationService>();
+builder.Services.RegisterEnumServiceScoped<IMedicationService, HypertensionMedicationService>();
+builder.Services.RegisterEnumServiceScoped<IMedicationService, MedicationService>();
 
 builder.Services.AddControllers(options =>
 {

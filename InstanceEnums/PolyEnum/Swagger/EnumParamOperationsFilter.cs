@@ -1,32 +1,18 @@
-﻿using InstanceEnums.PolyEnum.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
+﻿using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using TypedEnums;
 
 namespace InstanceEnums.PolyEnum.Swagger
 {
     public class EnumParamOperationsFilter : IParameterFilter
     {
-
         public void Apply(OpenApiParameter parameter, ParameterFilterContext context)
         {
-            if (context.ParameterInfo?.ParameterType == null)
-                return;
+            if (context.ParameterInfo?.ParameterType == null) return;
 
-            if (HandleInstanceEnumParameter(parameter, context))
-                return;
+            if (HandleInstanceEnumParameter(parameter, context)) return;
 
             HandleEnumService(parameter, context);
         }
@@ -35,8 +21,7 @@ namespace InstanceEnums.PolyEnum.Swagger
         {
             var enumType = EnumRegistry.GetEnumBaseType(context.ParameterInfo.ParameterType);
 
-            if (!IsEnumType(enumType))
-                return false;
+            if (!IsEnumType(enumType)) return false;
 
             var memberNames = (string[])enumType.GetMethod("GetNames", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).Invoke(null, new object[] { });
             parameter.Schema.Type = "string";
@@ -49,8 +34,7 @@ namespace InstanceEnums.PolyEnum.Swagger
         {
             var enumType = EnumRegistry.GetBaseEnumTypeThatIsParentOf(context.ParameterInfo.ParameterType);
 
-            if (enumType == null)
-                return;
+            if (enumType == null) return;
 
             parameter.Schema.Type = "string";
 
@@ -61,8 +45,7 @@ namespace InstanceEnums.PolyEnum.Swagger
 
         private static bool IsEnumType(Type enumType)
         {
-            if (enumType == null)
-                return false;
+            if (enumType == null) return false;
 
             return enumType.IsSubclassOf(typeof(PolyEnumBase)) || !enumType.IsSubclassOf(typeof(PolyEnum<>).MakeGenericType(new Type[] { enumType }));
         }

@@ -1,16 +1,12 @@
-﻿using InstanceEnums.PolyEnum.ModelBinding;
-using InstanceEnums.testData;
-using System.ComponentModel;
-using System.Globalization;
-using TypedEnums;
+﻿using TypedEnums;
 
 namespace InstanceEnums.Test.Web.Enums
 {
     public class DiagnosisTypes : PolyEnum<DiagnosisTypes>
     {
-        public interface ISleepingTooLittle : IDiagnosisType { }
+        public interface IInsomnia : IDiagnosisType { }
 
-        public interface IHighBloodPresure : IDiagnosisType { }
+        public interface IHypertension : IDiagnosisType { }
 
         public interface IDiagnosisType { }
     }

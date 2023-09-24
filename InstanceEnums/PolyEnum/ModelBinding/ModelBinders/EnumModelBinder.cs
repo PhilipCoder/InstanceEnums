@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using TypedEnums;
 
 namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
-{//https://localhost:7116/workflow/1
+{
     public class EnumModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)

@@ -1,6 +1,4 @@
-﻿using InstanceEnums.PolyEnum.Extensions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
 {
@@ -15,21 +13,13 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            if (bindingContext == null)
-            {
-                throw new ArgumentNullException(nameof(bindingContext));
-            }
+            if (bindingContext == null)  throw new ArgumentNullException(nameof(bindingContext));
 
             var enumBaseType = EnumRegistry.GetBaseEnumTypeThatIsParentOf(bindingContext.ModelType);
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-            if (enumBaseType == null)
-            {
-                return Task.CompletedTask;
-            }
-
-            object serviceInstance = null;
+            if (enumBaseType == null) return Task.CompletedTask;
 
             var value = valueProviderResult.FirstValue;
 
@@ -38,6 +28,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
                 bindingContext.Result = ModelBindingResult.Success(_serviceProvider.GetServiceForEnum(bindingContext.ModelType, enumBaseType, modelValue));
                 return Task.CompletedTask;
             }
+
             bindingContext.Result = ModelBindingResult.Success(_serviceProvider.GetServiceForEnum(bindingContext.ModelType, enumBaseType, value));
             return Task.CompletedTask;
         }

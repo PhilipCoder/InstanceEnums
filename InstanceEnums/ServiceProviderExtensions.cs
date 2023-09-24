@@ -1,8 +1,6 @@
 ﻿using InstanceEnums.PolyEnum.Extensions;
 using InstanceEnums.PolyEnum.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Data;
 
@@ -20,7 +18,7 @@ namespace InstanceEnums
             Services = serviceCollection;
             if (!ServiceTypes.Contains(typeof(TService)))
             {
-                TypeDescriptor.AddAttributes(typeof(TService), new TypeConverterAttribute(typeof(SomeWrapperTypeTypeConverter)));
+                TypeDescriptor.AddAttributes(typeof(TService), new TypeConverterAttribute(typeof(StringTypeConverter)));
             }
             serviceCollection.AddTransient<TService, TImplementation>();
             ServiceTypes.Add(typeof(TService));
@@ -50,17 +48,12 @@ namespace InstanceEnums
 
         public static T GetServiceForEnum<T>(this IServiceProvider serviceProvider, object enumInstance)
         {
-            var enumType = enumInstance.GetType().GetInterfaces().FirstOrDefault(x => x.Name == enumInstance.GetType().Name);
-            if (enumType == null) throw new InvalidConstraintException("PolyEnums should always implement interfaces.");
-
-            return (T)serviceProvider.GetServiceForEnum(typeof(T), enumType);
+            return (T)serviceProvider.GetServiceForEnum(typeof(T), enumInstance.GetType());
         }
 
         public static object GetServiceForEnum(this IServiceProvider serviceProvider, Type serviceType, Type enumMemberType)
         {
             var services = serviceProvider.GetServices(serviceType);
-
-            var temp = services.First();
 
             var enumInterfaces = enumMemberType.GetInterfaces();
 
@@ -68,7 +61,9 @@ namespace InstanceEnums
 
             var servicesOfType = services.Where(x => parentInterface.IsAssignableFrom(x.GetType()));
 
-            return servicesOfType.Count() > 1 ? servicesOfType.OrderBy(x=>x.GetType().GetInterfaceLevel(enumMemberType)).FirstOrDefault() : servicesOfType.FirstOrDefault();
+            var result = servicesOfType.Count() > 1 ? servicesOfType.OrderBy(x=>x.GetType().GetInterfaceLevel(enumMemberType)).FirstOrDefault() : servicesOfType.FirstOrDefault();
+
+            return result;
         }
     }
 }

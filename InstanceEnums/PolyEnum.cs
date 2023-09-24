@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace TypedEnums
 {
-    [TypeConverter(typeof(SomeWrapperTypeTypeConverter))]
+    [TypeConverter(typeof(StringTypeConverter))]
     public abstract class PolyEnum<T> : PolyEnumBase where T : PolyEnum<T>, new()
     {
         protected static InterfaceValueFactory interfaceValueFactory = new InterfaceValueFactory();

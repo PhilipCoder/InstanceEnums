@@ -9,7 +9,7 @@ namespace InstanceEnums
         internal static ConcurrentDictionary<Type, Type> EnumMappings = new ConcurrentDictionary<Type, Type>();
         public static void RegisterEnum<EnumType, BaseInterfaceType>()
         {
-            TypeDescriptor.AddAttributes(typeof(BaseInterfaceType), new TypeConverterAttribute(typeof(SomeWrapperTypeTypeConverter)));
+            TypeDescriptor.AddAttributes(typeof(BaseInterfaceType), new TypeConverterAttribute(typeof(StringTypeConverter)));
 
             EnumMappings.TryAdd(typeof(BaseInterfaceType), typeof(EnumType));
         }
