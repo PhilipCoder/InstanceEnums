@@ -5,7 +5,9 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstanceEnums", "InstanceEnums\InstanceEnums.csproj", "{EC26C47B-F5FC-4A0C-8E90-578882171032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstanceEnums.Test.Web", "InstanceEnums.Test.Web\InstanceEnums.Test.Web.csproj", "{65895A70-7468-4D45-9E74-FB52219C44B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstanceEnums.Test.Web", "InstanceEnums.Test.Web\InstanceEnums.Test.Web.csproj", "{65895A70-7468-4D45-9E74-FB52219C44B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{CDAEEA86-E4D8-4B87-A19E-09D55F82AA87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{65895A70-7468-4D45-9E74-FB52219C44B7} = {CDAEEA86-E4D8-4B87-A19E-09D55F82AA87}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E11BED16-41B4-455A-929F-FC8EE353DE3C}
