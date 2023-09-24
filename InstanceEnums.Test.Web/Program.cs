@@ -19,7 +19,9 @@ builder.Services.AddControllers(options =>
 {
     options.ModelBinderProviders.Insert(0, new EnumModelBinderProvider());
 });
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c=>{
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Document Conversion API", Version = "v1" });
     c.AddInstanceEnums();
