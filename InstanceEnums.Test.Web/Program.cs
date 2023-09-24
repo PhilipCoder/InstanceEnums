@@ -6,12 +6,11 @@ using InstanceEnums.Test.Web.ServiceContracts;
 using InstanceEnums.Test.Web.Services;
 using Microsoft.OpenApi.Models;
 
+var builder = WebApplication.CreateBuilder(args);
+
 EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
 EnumRegistry.RegisterEnum<AgeGroups, AgeGroups.IAgeGroup>();
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 builder.Services.RegisterEnumServiceScoped<IMedicationService, InsomniaMedicationService>();
 builder.Services.RegisterEnumServiceScoped<IMedicationService, HypertensionMedicationService>();
 builder.Services.RegisterEnumServiceScoped<IMedicationService, MedicationService>();
@@ -28,7 +27,6 @@ builder.Services.AddSwaggerGen(c=>{
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
