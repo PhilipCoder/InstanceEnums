@@ -6,11 +6,11 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
 {
     public class EnumInstanceModelBinder : IModelBinder
     {
-        private ServiceProvider _serviceProvider { get; }
+        private IServiceProvider _serviceProvider { get; }
 
         public EnumInstanceModelBinder(IServiceProvider serviceProvider)
         {
-            _serviceProvider = (ServiceProvider)serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -20,7 +20,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var enumBaseType = EnumRegistry.GetEnumType(bindingContext.ModelType);
+            var enumBaseType = EnumRegistry.GetBaseEnumTypeThatIsParentOf(bindingContext.ModelType);
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 

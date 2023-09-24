@@ -1,37 +1,54 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using InstanceEnums.PolyEnum.Extensions;
+using InstanceEnums.PolyEnum.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Data;
 
 namespace InstanceEnums
 {
     public static class ServiceProviderExtensions
     {
-        private static ConcurrentDictionary<string, string> _serviceEnumIndex = new ConcurrentDictionary<string, string>();
+        public static HashSet<Type> ServiceTypes = new HashSet<Type>();
 
-        public static T GetServiceForEnum<T, E>(this ServiceProvider serviceProvider)
+        public static IServiceCollection Services = null;
+
+        public static void RegisterEnumServiceScoped<TService, TImplementation>(this IServiceCollection serviceCollection)  
+            where TService : class where TImplementation : class, TService
+        {
+            Services = serviceCollection;
+            if (!ServiceTypes.Contains(typeof(TService)))
+            {
+                TypeDescriptor.AddAttributes(typeof(TService), new TypeConverterAttribute(typeof(SomeWrapperTypeTypeConverter)));
+            }
+            serviceCollection.AddTransient<TService, TImplementation>();
+            ServiceTypes.Add(typeof(TService));
+        }
+
+        public static T GetServiceForEnum<T, E>(this IServiceProvider serviceProvider)
         {
             return (T)serviceProvider.GetServiceForEnum(typeof(T), typeof(E));
         }
 
-        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumType, string enumValue)
+        public static object GetServiceForEnum(this IServiceProvider serviceProvider, Type serviceType, Type enumType, string enumValue)
+        {
+            var enumMemberType = enumType.BaseType.GetMethod("GetByName").Invoke(null, new object[] { (dynamic)enumValue });
+            return serviceProvider.GetServiceForEnum(serviceType, enumMemberType.GetType());
+        }
+
+        public static object GetServiceForEnum(this IServiceProvider serviceProvider, Type serviceType, Type enumType, int enumValue)
         {
             var enumMemberType = enumType.BaseType.GetMethod("GetInstance").Invoke(null, new object[] { (dynamic)enumValue });
             return serviceProvider.GetServiceForEnum(serviceType, enumMemberType.GetType());
         }
 
-        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumType, int enumValue)
-        {
-            var enumMemberType = enumType.BaseType.GetMethod("GetInstance").Invoke(null, new object[] { (dynamic)enumValue });
-            return serviceProvider.GetServiceForEnum(serviceType, enumMemberType.GetType());
-        }
-
-        public static T GetServiceForEnum<T>(this ServiceProvider serviceProvider, Type enumMemberType)
+        public static T GetServiceForEnum<T>(this IServiceProvider serviceProvider, Type enumMemberType)
         {
             return (T)serviceProvider.GetServiceForEnum(typeof(T), enumMemberType);
         }
 
-        public static T GetServiceForEnum<T>(this ServiceProvider serviceProvider, object enumInstance)
+        public static T GetServiceForEnum<T>(this IServiceProvider serviceProvider, object enumInstance)
         {
             var enumType = enumInstance.GetType().GetInterfaces().FirstOrDefault(x => x.Name == enumInstance.GetType().Name);
             if (enumType == null) throw new InvalidConstraintException("PolyEnums should always implement interfaces.");
@@ -39,41 +56,19 @@ namespace InstanceEnums
             return (T)serviceProvider.GetServiceForEnum(typeof(T), enumType);
         }
 
-        public static object GetServiceForEnum(this ServiceProvider serviceProvider, Type serviceType, Type enumMemberType)
+        public static object GetServiceForEnum(this IServiceProvider serviceProvider, Type serviceType, Type enumMemberType)
         {
             var services = serviceProvider.GetServices(serviceType);
 
-            var serviceEnumIndexKey = $"{serviceType.FullName}{enumMemberType.FullName}";
+            var temp = services.First();
 
-            return _serviceEnumIndex.ContainsKey(serviceEnumIndexKey) ? 
-                GetServiceForEnumType(services, serviceEnumIndexKey) : 
-                GetServiceForEnumType(serviceType, enumMemberType, services, serviceEnumIndexKey);
-        }
-
-        private static object GetServiceForEnumType(IEnumerable<object> services, string serviceFullTypeName)
-        {
-            return services.FirstOrDefault(x => x.GetType().FullName == serviceFullTypeName);
-        }
-
-        private static object GetServiceForEnumType(Type serviceType, Type enumMemberType, IEnumerable<object> services, string serviceEnumIndexKey)
-        {
             var enumInterfaces = enumMemberType.GetInterfaces();
 
-            var parentInterface = enumInterfaces.FirstOrDefault();
+            var parentInterface = enumInterfaces.FirstOrDefault(x=>x.Name == enumMemberType.Name);
 
-            var service = services.FirstOrDefault(x => x.GetType().IsAssignableTo(enumMemberType)) ?? services.FirstOrDefault(x => x.GetType().IsAssignableTo(parentInterface));
+            var servicesOfType = services.Where(x => parentInterface.IsAssignableFrom(x.GetType()));
 
-            if (service == null)
-            {
-                var exceptionMessage = parentInterface != null ?
-                    $"No registered serivce found for type {serviceType.FullName} implementing enums ${enumMemberType.FullName} or {parentInterface.GetType().FullName}." :
-                    $"No registered serivce found for type {serviceType.FullName} implementing enums ${enumMemberType.FullName}.";
-                throw new KeyNotFoundException(exceptionMessage);
-            }
-
-            _serviceEnumIndex[serviceEnumIndexKey] = service.GetType().FullName;
-
-            return service;
+            return servicesOfType.Count() > 1 ? servicesOfType.OrderBy(x=>x.GetType().GetInterfaceLevel(enumMemberType)).FirstOrDefault() : servicesOfType.FirstOrDefault();
         }
     }
 }

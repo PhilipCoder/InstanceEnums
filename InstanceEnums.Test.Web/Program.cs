@@ -14,8 +14,9 @@ EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IDiagnosisManager, HighBloodPresureManager>();
-builder.Services.AddScoped<IDiagnosisManager, SleepingTooLittleManager>();
+builder.Services.RegisterEnumServiceScoped<IDiagnosisManager, HighBloodPresureManager>();
+builder.Services.RegisterEnumServiceScoped<IDiagnosisManager, SleepingTooLittleManager>();
+builder.Services.RegisterEnumServiceScoped<IDiagnosisManager, DiagnosisManager>();
 
 builder.Services.AddControllers(options =>
 {

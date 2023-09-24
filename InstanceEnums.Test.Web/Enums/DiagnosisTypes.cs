@@ -12,7 +12,6 @@ namespace InstanceEnums.Test.Web.Enums
 
         public interface IHighBloodPresure : IDiagnosisType { }
 
-        //[TypeConverter(typeof(SomeWrapperTypeTypeConverter))]
         public interface IDiagnosisType { }
     }
 }

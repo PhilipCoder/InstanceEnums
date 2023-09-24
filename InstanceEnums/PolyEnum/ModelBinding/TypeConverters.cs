@@ -20,25 +20,25 @@ namespace InstanceEnums.PolyEnum.ModelBinding
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            var enumType = EnumRegistry.GetEnumType(destinationType);
+            var enumType = EnumRegistry.GetEnumBaseType(destinationType);
             Debug.WriteLine("=========================================================================");
             Debug.WriteLine(context.Instance.GetType().FullName);
             return context.Instance.GetType() == typeof(string) && enumType != null;
         }
 
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            var casted = value as string;
-            return casted != null
-                ? context.Instance.GetType().GetMethod("Get").Invoke(null, new object[] { (dynamic)value })
-                : null;
-        }
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            var casted = value as string;
-            return casted != null
-                ? context.Instance.GetType().GetMethod("Get").Invoke(null, new object[] { (dynamic)value })
-                : null;
-        }
+        //public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        //{
+        //    var casted = value as string;
+        //    return casted != null
+        //        ? context.Instance.GetType().GetMethod("Get").Invoke(null, new object[] { (dynamic)value })
+        //        : null;
+        //}
+        //public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        //{
+        //    var casted = value as string;
+        //    return casted != null
+        //        ? context.Instance.GetType().GetMethod("Get").Invoke(null, new object[] { (dynamic)value })
+        //        : null;
+        //}
     }
 }

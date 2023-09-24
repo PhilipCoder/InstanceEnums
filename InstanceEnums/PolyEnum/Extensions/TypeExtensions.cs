@@ -21,6 +21,21 @@ namespace InstanceEnums.PolyEnum.Extensions
             return parentTypes;
         }
 
+        internal static int GetInterfaceLevel(this Type targetType, Type interfaceType)
+        {
+            var interfaces = targetType.GetInterfaces();
+            int count = 0;
+            foreach (var inter in interfaces)
+            {
+                if (inter == interfaceType)
+                {
+                    return count;
+                }
+                count++;
+            }
+            return count;
+        }
+
         internal static T GetParentAttributeInstance<T>(this Type type) where T : Attribute
         {
             while (true)
@@ -37,7 +52,7 @@ namespace InstanceEnums.PolyEnum.Extensions
             return null;
         }
 
-        internal static T GetParentInterfaceAttributeInstance<T>(this Type type) where T : Attribute
+        internal static T GetParentInterfacesThatIsChildOf<T>(this Type type,Type parentType) where T : Attribute
         {
             var parentInterfaces = type.GetInterfaces();
 

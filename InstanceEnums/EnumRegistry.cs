@@ -1,11 +1,6 @@
 ﻿using InstanceEnums.PolyEnum.ModelBinding;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InstanceEnums
 {
@@ -19,13 +14,28 @@ namespace InstanceEnums
             EnumMappings.TryAdd(typeof(BaseInterfaceType), typeof(EnumType));
         }
 
-        internal static Type GetEnumType(Type baseInterfaceType)
+        internal static Type GetEnumBaseType(Type baseInterfaceType)
         {
-            if (EnumMappings.TryGetValue(baseInterfaceType, out var enumType))
+            if (baseInterfaceType != null && EnumMappings.TryGetValue(baseInterfaceType, out var enumType))
             {
                 return enumType;
             }
             return null;
+        }
+
+        internal static Type GetEnumType(Type baseInterfaceType)
+        {
+            return EnumMappings.FirstOrDefault(x => x.Key == baseInterfaceType).Value;
+        }
+
+        internal static Type GetEnumTypeThatIsParentOf( Type childType)
+        {
+            return EnumMappings.FirstOrDefault(x => x.Key.IsAssignableFrom(childType)).Key;
+        }
+
+        internal static Type GetBaseEnumTypeThatIsParentOf(Type childType)
+        {
+            return EnumMappings.FirstOrDefault(x => x.Key.IsAssignableFrom(childType)).Value;
         }
     }
 }

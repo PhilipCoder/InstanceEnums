@@ -2,7 +2,7 @@
 
 namespace InstanceEnums.Test.Web.Managers
 {
-    public interface IDiagnosisManager : DiagnosisTypes.IHighBloodPresure
+    public interface IDiagnosisManager : DiagnosisTypes.IDiagnosisType
     {
         string GetFix();
     }

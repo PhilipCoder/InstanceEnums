@@ -11,7 +11,6 @@ namespace InstanceEnums.Test.Web.Controllers
     [Route("[controller]")]
     public class WorkflowController : ControllerBase
     {
-        [TypeConverter(typeof(SomeWrapperTypeTypeConverter))]
         [HttpGet("{diagnosisType}")]
         public string Get( DiagnosisTypes.IDiagnosisType diagnosisType)
         {

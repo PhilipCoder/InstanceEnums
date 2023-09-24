@@ -18,7 +18,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var enumType = EnumRegistry.GetEnumType(bindingContext.ModelType);
+            var enumType = EnumRegistry.GetEnumBaseType(bindingContext.ModelType);
 
             var modelName = bindingContext.ModelName;
 
