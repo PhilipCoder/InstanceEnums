@@ -5,7 +5,7 @@ namespace InstanceEnums.Test.Web.Services
 {
     public class InsomniaMedicationService : DiagnosisTypes.IInsomnia, IMedicationService
     {
-        private const string _insomniaResult = "You have struggle sleeping. You need to take {0} of our potent tranqulizers before bed time. Age group: {1}";
+        private const string _insomniaResult = "You have struggle sleeping. You need to take {0} of our potent tranquilizers before bed time. Age group: {1}";
 
         public string GetPrescription(AgeGroups.IAdult adult)
         {
@@ -22,9 +22,9 @@ namespace InstanceEnums.Test.Web.Services
             return String.Format(_insomniaResult, "7", "teen");
         }
 
-        public string GetPrescription(AgeGroups.ITodler todler)
+        public string GetPrescription(AgeGroups.IToddler todler)
         {
-            return String.Format(_insomniaResult, "80 (make him sleep a long time)", "todler");
+            return String.Format(_insomniaResult, "80 (make him sleep a long time)", "toddler");
         }
 
         public string GetPrescription(AgeGroups.IAgeGroup ageGroup)

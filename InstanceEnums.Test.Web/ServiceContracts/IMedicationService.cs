@@ -10,7 +10,7 @@ namespace InstanceEnums.Test.Web.ServiceContracts
 
         string GetPrescription(AgeGroups.ITeen teen);
 
-        string GetPrescription(AgeGroups.ITodler todler);
+        string GetPrescription(AgeGroups.IToddler todler);
 
         string GetPrescription(AgeGroups.IAgeGroup ageGroup);
     }

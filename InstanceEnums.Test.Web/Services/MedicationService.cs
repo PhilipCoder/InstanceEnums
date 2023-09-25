@@ -21,7 +21,7 @@ namespace InstanceEnums.Test.Web.Services
             return _medicationResult;
         }
 
-        public string GetPrescription(AgeGroups.ITodler todler)
+        public string GetPrescription(AgeGroups.IToddler todler)
         {
             return _medicationResult;
         }

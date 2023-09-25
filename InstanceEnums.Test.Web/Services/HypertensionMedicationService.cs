@@ -22,7 +22,7 @@ namespace InstanceEnums.Test.Web.Services
             return String.Format(_hypertensionResult, "3", "teen");
         }
 
-        public string GetPrescription(AgeGroups.ITodler todler)
+        public string GetPrescription(AgeGroups.IToddler todler)
         {
             return String.Format(_hypertensionResult, "0.5", "todler");
         }

@@ -10,7 +10,7 @@ namespace InstanceEnums.Test.Web.Enums
 
         public interface IChild : IAgeGroup { }
 
-        public interface ITodler : IAgeGroup { }
+        public interface IToddler : IAgeGroup { }
 
         public interface IAgeGroup { }
     }
