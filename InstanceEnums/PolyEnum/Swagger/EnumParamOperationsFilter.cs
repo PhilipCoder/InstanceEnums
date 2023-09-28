@@ -1,6 +1,9 @@
-﻿using Microsoft.OpenApi.Any;
+﻿using InstanceEnums.PolyEnum.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.ComponentModel;
 using System.Reflection;
 using TypedEnums;
 
@@ -8,6 +11,8 @@ namespace InstanceEnums.PolyEnum.Swagger
 {
     public class EnumParamOperationsFilter : IParameterFilter
     {
+        public static HashSet<Type> ServiceTypes = new HashSet<Type>();
+
         public void Apply(OpenApiParameter parameter, ParameterFilterContext context)
         {
             if (context.ParameterInfo?.ParameterType == null) return;
@@ -32,9 +37,16 @@ namespace InstanceEnums.PolyEnum.Swagger
 
         private static void HandleEnumService(OpenApiParameter parameter, ParameterFilterContext context)
         {
-            var enumType = EnumRegistry.GetBaseEnumTypeThatIsParentOf(context.ParameterInfo.ParameterType);
+            var enumType = EnumRegistry.GetEnumForService(context.ParameterInfo.ParameterType);
 
             if (enumType == null) return;
+
+            if (!ServiceTypes.Contains(context.ParameterInfo.ParameterType))
+            {
+                TypeDescriptor.AddAttributes(context.ParameterInfo.ParameterType, new TypeConverterAttribute(typeof(StringTypeConverter)));
+                ServiceTypes.Add(context.ParameterInfo.ParameterType);
+
+            }
 
             parameter.Schema.Type = "string";
 
@@ -47,7 +59,7 @@ namespace InstanceEnums.PolyEnum.Swagger
         {
             if (enumType == null) return false;
 
-            return enumType.IsSubclassOf(typeof(PolyEnumBase)) || !enumType.IsSubclassOf(typeof(PolyEnum<>).MakeGenericType(new Type[] { enumType }));
+            return enumType.IsSubclassOf(typeof(InstanceEnumBase)) || !enumType.IsSubclassOf(typeof(InstanceEnum<>).MakeGenericType(new Type[] { enumType }));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
 
-            if (enumType == null || valueProviderResult == ValueProviderResult.None || !enumType.IsSubclassOf(typeof(PolyEnumBase)))
+            if (enumType == null || valueProviderResult == ValueProviderResult.None || !enumType.IsSubclassOf(typeof(InstanceEnumBase)))
             {
                 return Task.CompletedTask;
             }

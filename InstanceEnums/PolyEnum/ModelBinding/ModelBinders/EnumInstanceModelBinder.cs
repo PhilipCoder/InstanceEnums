@@ -15,7 +15,7 @@ namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinders
         {
             if (bindingContext == null)  throw new ArgumentNullException(nameof(bindingContext));
 
-            var enumBaseType = EnumRegistry.GetBaseEnumTypeThatIsParentOf(bindingContext.ModelType);
+            var enumBaseType = EnumRegistry.GetEnumForService(bindingContext.ModelType);
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 

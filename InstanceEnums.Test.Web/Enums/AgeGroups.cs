@@ -2,7 +2,7 @@
 
 namespace InstanceEnums.Test.Web.Enums
 {
-    public class AgeGroups : PolyEnum<AgeGroups>
+    public class AgeGroups : InstanceEnum<AgeGroups>
     {
         public interface IAdult : IAgeGroup { }
 

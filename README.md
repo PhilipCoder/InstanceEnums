@@ -84,9 +84,9 @@ The problem with the code above, is that as soon as when you want to add a new d
 
 ## Solution
 
-If every enum value represented a interface, we can use polymorphism and even method overloading to get rid of all the conditional statements. PolyEnum is a small library that gives types to enums.
+If every enum value represented a interface, we can use polymorphism and even method overloading to get rid of all the conditional statements. InstanceEnum is a small library that gives types to enums.
 
-Rewriting switches with the PolyEnum Library:
+Rewriting switches with the InstanceEnum Library:
 
 1) First we have to create the diagnosis and age group enums:
 
@@ -95,7 +95,7 @@ __DiagnosisTypes.cs__
 ```csharp
 using TypedEnums;
 
-public class DiagnosisTypes : PolyEnum<DiagnosisTypes>
+public class DiagnosisTypes : InstanceEnum<DiagnosisTypes>
 {
     public interface IInsomnia : IDiagnosisType { }
 
@@ -110,7 +110,7 @@ __AgeGroups.cs__
 ```csharp
 using TypedEnums;
 
-public class AgeGroups : PolyEnum<AgeGroups>
+public class AgeGroups : InstanceEnum<AgeGroups>
 {
     public interface IAdult : IAgeGroup { }
 
@@ -124,12 +124,12 @@ public class AgeGroups : PolyEnum<AgeGroups>
 }
 ```
 
-As in the PolyEnum classes above, a PolyEnum is a class that inherits from PolyEnum with nested interfaces. A base interface (IAgeGroup and IDiagnosisType) 
+As in the InstanceEnum classes above, a InstanceEnum is a class that inherits from InstanceEnum with nested interfaces. A base interface (IAgeGroup and IDiagnosisType) 
 has to be declared and the Enum members are inheriting the base interface.
 
 > Enum members are convertible to integers and strings. The integer values are incremented for each member declaration, just like normal enums. Custom names and values can be assigned.
 
-2) Enums must be registerd in the EnumRegistry:
+2) Instance Enums must be registered in the EnumRegistry:
 
 __Program.cs__
 
@@ -139,3 +139,5 @@ var builder = WebApplication.CreateBuilder(args);
 EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
 EnumRegistry.RegisterEnum<AgeGroups, AgeGroups.IAgeGroup>();
 ```
+
+In order to enable the instance enums in Swagger, we 

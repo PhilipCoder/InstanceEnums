@@ -88,9 +88,9 @@ namespace InstanceEnums.Tests
         {
             EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var services = new ServiceCollection();
-            services.RegisterEnumServiceScoped<IVehiclePriceCalculator, VehiclePriceCalculator>();
-            services.RegisterEnumServiceScoped<IVehiclePriceCalculator, NullPriceCalculator>();
-            services.RegisterEnumServiceScoped<IVehiclePriceCalculator, TruckPriceCalculator>();
+            services.AddTransient<IVehiclePriceCalculator, VehiclePriceCalculator>();
+            services.AddTransient<IVehiclePriceCalculator, NullPriceCalculator>();
+            services.AddTransient<IVehiclePriceCalculator, TruckPriceCalculator>();
 
 
             var provider = services.BuildServiceProvider();
@@ -112,9 +112,9 @@ namespace InstanceEnums.Tests
         {
             EnumRegistry.RegisterEnum<Vehicles, Vehicles.IVehicle>();
             var services = new ServiceCollection();
-            services.RegisterEnumServiceScoped<IVehiclePriceCalculator, VehiclePriceCalculator>();
-            services.RegisterEnumServiceScoped<IVehiclePriceCalculator, NullPriceCalculator>();
-            services.RegisterEnumServiceScoped<IVehiclePriceCalculator, TruckPriceCalculator>();
+            services.AddTransient<IVehiclePriceCalculator, VehiclePriceCalculator>();
+            services.AddTransient<IVehiclePriceCalculator, NullPriceCalculator>();
+            services.AddTransient<IVehiclePriceCalculator, TruckPriceCalculator>();
 
 
             var provider = services.BuildServiceProvider();

@@ -2,7 +2,7 @@
 
 namespace InstanceEnums.testData
 {
-    public class AgeGroups : PolyEnum<AgeGroups>
+    public class AgeGroups : InstanceEnum<AgeGroups>
     {
         public interface ITodler : IAgeGroup { }
 

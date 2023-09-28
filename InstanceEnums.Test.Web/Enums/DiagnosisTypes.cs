@@ -2,7 +2,7 @@
 
 namespace InstanceEnums.Test.Web.Enums
 {
-    public class DiagnosisTypes : PolyEnum<DiagnosisTypes>
+    public class DiagnosisTypes : InstanceEnum<DiagnosisTypes>
     {
         public interface IInsomnia : IDiagnosisType { }
 

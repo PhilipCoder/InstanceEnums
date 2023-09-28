@@ -1,4 +1,5 @@
 using InstanceEnums;
+using InstanceEnums.PolyEnum.Extensions;
 using InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders;
 using InstanceEnums.PolyEnum.Swagger;
 using InstanceEnums.Test.Web.Enums;
@@ -8,12 +9,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
-EnumRegistry.RegisterEnum<AgeGroups, AgeGroups.IAgeGroup>();
+builder.Services.AddSingleton<AgeGroups>();
+builder.Services.AddSingleton<DiagnosisTypes>();
 
-builder.Services.RegisterEnumServiceScoped<IMedicationService, InsomniaMedicationService>();
-builder.Services.RegisterEnumServiceScoped<IMedicationService, HypertensionMedicationService>();
-builder.Services.RegisterEnumServiceScoped<IMedicationService, MedicationService>();
+builder.Services.AddTransient<IMedicationService, InsomniaMedicationService>();
+builder.Services.AddTransient<IMedicationService, HypertensionMedicationService>();
+builder.Services.AddTransient<IMedicationService, MedicationService>();
 
 builder.Services.AddControllers(options =>
 {
@@ -22,10 +23,13 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.ActivateEnums();
+
 builder.Services.AddSwaggerGen(c=>{
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Document Conversion API", Version = "v1" });
     c.AddInstanceEnums();
 });
+
 
 var app = builder.Build();
 

@@ -2,7 +2,7 @@
 
 namespace InstanceEnums.Tests.testData
 {
-    public class Vehicles : PolyEnum<Vehicles>
+    public class Vehicles : InstanceEnum<Vehicles>
     {
         public interface ICar : IVehicle { }
 

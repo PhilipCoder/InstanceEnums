@@ -8,7 +8,7 @@ using System.Reflection;
 namespace TypedEnums
 {
     [TypeConverter(typeof(StringTypeConverter))]
-    public abstract class PolyEnum<T> : PolyEnumBase where T : PolyEnum<T>, new()
+    public abstract class InstanceEnum<T> : InstanceEnumBase where T : InstanceEnum<T>, new()
     {
         protected static InterfaceValueFactory interfaceValueFactory = new InterfaceValueFactory();
 
@@ -25,7 +25,7 @@ namespace TypedEnums
                 return _nestedTypes = _nestedTypes ?? this.GetType().GetNestedTypes().Where(nestedType => nestedType.IsInterface).ToArray();
             }
         }
-        public PolyEnum() {
+        public InstanceEnum() {
             PopulateEnumIndexes();
 
         }

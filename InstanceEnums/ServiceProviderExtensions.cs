@@ -1,4 +1,5 @@
-﻿using InstanceEnums.PolyEnum.Extensions;
+﻿using InstanceEnums.PolyEnum;
+using InstanceEnums.PolyEnum.Extensions;
 using InstanceEnums.PolyEnum.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
@@ -8,17 +9,18 @@ namespace InstanceEnums
 {
     public static class ServiceProviderExtensions
     {
-        public static HashSet<Type> ServiceTypes = new HashSet<Type>();
+        private static HashSet<Type> ServiceTypes = new HashSet<Type>();
 
-        public static IServiceCollection Services = null;
+        private static IServiceCollection Services = null;
 
-        public static void RegisterEnumServiceScoped<TService, TImplementation>(this IServiceCollection serviceCollection)  
-            where TService : class where TImplementation : class, TService
+        public static void AddTransientEnum<TService, TImplementation>(this IServiceCollection serviceCollection)
+            where TService : class
+            where TImplementation : class, TService
         {
             Services = serviceCollection;
             if (!ServiceTypes.Contains(typeof(TService)))
             {
-                TypeDescriptor.AddAttributes(typeof(TService), new TypeConverterAttribute(typeof(StringTypeConverter)));
+          //      TypeDescriptor.AddAttributes(typeof(TService), new TypeConverterAttribute(typeof(StringTypeConverter)));
             }
             serviceCollection.AddTransient<TService, TImplementation>();
             ServiceTypes.Add(typeof(TService));
