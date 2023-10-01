@@ -84,6 +84,8 @@ The problem with the code above, is that as soon as when you want to add a new d
 
 ## Solution
 
+_Please see the working example in InstanceEnums.Test.Web_
+
 If every enum value represented a interface, we can use polymorphism and even method overloading to get rid of all the conditional statements. InstanceEnum is a small library that gives types to enums.
 
 Rewriting switches with the InstanceEnum Library:
@@ -136,30 +138,7 @@ has to be declared and the Enum members are inheriting the base interface.
 Instance enums are activated via middleware in Program.cs or StartUp.cs. The extension method *__ActivateEnums__* on the application builder can be used. It needs to be called just before the .Build() call:
 
 ```csharp
-using InstanceEnums.PolyEnum.Extensions;
-using Microsoft.OpenApi.Models;
-
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c=>{ c.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo Instance Enums", Version = "v1" });});
-//Activate instance enums
 builder.ActivateEnums();
-
-var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
 ```
 
 The ActivateEnums extension method will also add the following to your API:
