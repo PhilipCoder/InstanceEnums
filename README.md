@@ -242,4 +242,4 @@ public class CureController : ControllerBase
 
 When you run the service, you can now pass the values via Swagger to the controller and get the correct results:
 
-![img](img/swaggerWithEnum.png)
+![img](./img/swaggerWithEnum.png)
