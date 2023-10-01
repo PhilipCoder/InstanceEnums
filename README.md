@@ -88,14 +88,16 @@ If every enum value represented a interface, we can use polymorphism and even me
 
 Rewriting switches with the InstanceEnum Library:
 
-1) First we have to create the diagnosis and age group enums:
+### Creating The Instance Enums
+
+Instance enums are records with nested interfaces. Every interface represent an enum member. The enum should also have a base interface that will be the "default" value of the enum.
 
 __DiagnosisTypes.cs__
 
 ```csharp
 using TypedEnums;
 
-public class DiagnosisTypes : InstanceEnum<DiagnosisTypes>
+public record DiagnosisTypes : InstanceEnum<DiagnosisTypes>
 {
     public interface IInsomnia : IDiagnosisType { }
 
@@ -110,7 +112,7 @@ __AgeGroups.cs__
 ```csharp
 using TypedEnums;
 
-public class AgeGroups : InstanceEnum<AgeGroups>
+public record AgeGroups : InstanceEnum<AgeGroups>
 {
     public interface IAdult : IAgeGroup { }
 
@@ -129,15 +131,140 @@ has to be declared and the Enum members are inheriting the base interface.
 
 > Enum members are convertible to integers and strings. The integer values are incremented for each member declaration, just like normal enums. Custom names and values can be assigned.
 
-2) Instance Enums must be registered in the EnumRegistry:
+### Activating Instance Enums Via Middleware
 
-__Program.cs__
+Instance enums are activated via middleware in Program.cs or StartUp.cs. The extension method *__ActivateEnums__* on the application builder can be used. It needs to be called just before the .Build() call:
 
 ```csharp
+using InstanceEnums.PolyEnum.Extensions;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
-//Register your enums just after the web application builder is created:
-EnumRegistry.RegisterEnum<DiagnosisTypes, DiagnosisTypes.IDiagnosisType>();
-EnumRegistry.RegisterEnum<AgeGroups, AgeGroups.IAgeGroup>();
+
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c=>{ c.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo Instance Enums", Version = "v1" });});
+//Activate instance enums
+builder.ActivateEnums();
+
+var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
 ```
 
-In order to enable the instance enums in Swagger, we 
+The ActivateEnums extension method will also add the following to your API:
+
+* Model binding for WebAPI.
+* Swagger data type support
+* Register and cache all the instance enums and instance derived services in your project.
+
+### Polymorphic Logic Services
+
+You can now create a _logic service_ that uses polymorphism and method overloading to do the medication calculation without a single conditional statement:
+
+*_Logic Service Interface:_*
+```csharp
+public interface IMedicationService : DiagnosisTypes.IDiagnosisType
+{
+    string GetPrescription(AgeGroups.IAdult ageGroup);
+
+    string GetPrescription(AgeGroups.IChild ageGroup);
+
+    string GetPrescription(AgeGroups.ITeen ageGroup);
+
+    string GetPrescription(AgeGroups.IToddler ageGroup);
+
+    string GetPrescription(AgeGroups.IAgeGroup ageGroup);
+}
+```
+
+*Default Logic Service:_*
+```csharp
+public class MedicationService : IMedicationService, DiagnosisTypes.IDiagnosisType
+{
+    private const string _medicationResult = "We don't know what is wrong with you. But take some random pills.";
+    public string GetPrescription(AgeGroups.IAdult adult) => _medicationResult;
+
+    public string GetPrescription(AgeGroups.IChild child) => _medicationResult;
+
+    public string GetPrescription(AgeGroups.ITeen teen) => _medicationResult;
+
+    public string GetPrescription(AgeGroups.IToddler todler) => _medicationResult;
+
+    public string GetPrescription(AgeGroups.IAgeGroup ageGroup) => _medicationResult;
+}
+```
+
+*_Hypertension Medication Service_*
+```csharp
+public class HypertensionMedicationService : DiagnosisTypes.IHypertension, IMedicationService
+{
+    private const string _hypertensionResult = "You have hypertension. You need to take {0} of the Blood Letting Pills. 2 Times a day, after meals. Age group: {1}";
+
+    public string GetPrescription(AgeGroups.IAdult ageGroup) => String.Format(_hypertensionResult, "4", ageGroup.ToString());
+
+    public string GetPrescription(AgeGroups.IChild ageGroup) => String.Format(_hypertensionResult, "2", ageGroup.ToString());
+
+    public string GetPrescription(AgeGroups.ITeen ageGroup) => String.Format(_hypertensionResult, "3", ageGroup.ToString());
+
+    public string GetPrescription(AgeGroups.IToddler ageGroup) => String.Format(_hypertensionResult, "0.5", ageGroup.ToString());
+
+    public string GetPrescription(AgeGroups.IAgeGroup ageGroup) => "Unsupported age group.";
+}
+```
+
+*_Insomnia Medication Service_*
+```csharp
+public class InsomniaMedicationService : DiagnosisTypes.IInsomnia, IMedicationService
+{
+    private const string _insomniaResult = "You have struggle sleeping. You need to take {0} of our potent tranquilizers before bed time. Age group: {1}";
+
+    public string GetPrescription(AgeGroups.IAdult ageGroup) => String.Format(_insomniaResult, "10", "adult");
+
+    public string GetPrescription(AgeGroups.IChild ageGroup) => String.Format(_insomniaResult, "6", "child");
+
+    public string GetPrescription(AgeGroups.ITeen ageGroup) => String.Format(_insomniaResult, "7", "teen");
+
+    public string GetPrescription(AgeGroups.IToddler ageGroup) => String.Format(_insomniaResult, "80 (make him sleep a long time)", "toddler");
+
+    public string GetPrescription(AgeGroups.IAgeGroup ageGroup) => "Unsupported age group.";
+}
+```
+
+### Injecting The Service Based On Enum In Controller
+
+You can now have the service as a parameter in your action, and the model binder will automatically bind the correct service instance according to the parameter passed via the request:
+
+*_Cure Controller_*
+```csharp
+[ApiController]
+[Route("[controller]")]
+public class CureController : ControllerBase
+{
+    [HttpGet("{diagnosis}/{ageGroup}")]
+    public string Get(IMedicationService diagnosis, AgeGroups.IAgeGroup ageGroup)
+    {
+        //The diagnosis service is injected based on the diagnosis URL parameter value.
+        //The correct method can then be invoked by using method overloading.
+        //Please note the dynamic keyword to force the method overloading to be resolved
+        //at runtime and not compile time.
+        return diagnosis.GetPrescription((dynamic)ageGroup);
+    }
+}
+```
+
+### Running The Service And Calling Via Swagger
+
+When you run the service, you can now pass the values via Swagger to the controller and get the correct results:
+
+![img](img/swaggerWithEnum.png)

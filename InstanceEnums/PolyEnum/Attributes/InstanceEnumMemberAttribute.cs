@@ -1,17 +1,16 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace InstanceEnums
+namespace InstanceEnums;
+
+public class InstanceEnumMemberAttribute : Attribute
 {
-    public class InstanceEnumMemberAttribute : Attribute
+    public string Name { get; }
+
+    public int Value { get; }
+
+    public InstanceEnumMemberAttribute([CallerMemberName] string name = null, int value = 0)
     {
-        public string Name { get; }
-
-        public int Value { get; }
-
-        public InstanceEnumMemberAttribute([CallerMemberName] string name = null, int value = 0)
-        {
-            Name = name;
-            Value = value;
-        }
+        Name = name;
+        Value = value;
     }
 }

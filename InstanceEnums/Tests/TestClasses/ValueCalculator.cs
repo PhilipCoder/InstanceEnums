@@ -1,22 +1,21 @@
 ﻿using InstanceEnums.Tests.testData;
 
-namespace InstanceEnums.Tests.TestClasses
+namespace InstanceEnums.Tests.TestClasses;
+
+public class ValueCalculator
 {
-    public class ValueCalculator
+    public string CalculateCost(Vehicles.ICar car)
     {
-        public string CalculateCost(Vehicles.ICar car)
-        {
-            return "$1400";
-        }
+        return "$1400";
+    }
 
-        public string CalculateCost(Vehicles.IBike bike)
-        {
-            return "$0400";
-        }
+    public string CalculateCost(Vehicles.IBike bike)
+    {
+        return "$0400";
+    }
 
-        public string CalculateCost(Vehicles.IVehicle vehicle)
-        {
-            return "Not sold";
-        }
+    public string CalculateCost(Vehicles.IVehicle vehicle)
+    {
+        return "Not sold";
     }
 }

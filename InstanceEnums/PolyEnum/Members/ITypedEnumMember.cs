@@ -1,9 +1,8 @@
-﻿namespace TypedEnums
-{
-    public interface ITypedEnumMember
-    {
-        int EnumValue { get; set; }
+﻿namespace TypedEnums;
 
-        string Name { get; set; }
-    }
+public interface ITypedEnumMember
+{
+    int EnumValue { get; set; }
+
+    string Name { get; set; }
 }

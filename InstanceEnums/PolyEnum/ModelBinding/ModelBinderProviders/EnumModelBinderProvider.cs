@@ -1,21 +1,20 @@
 ﻿using InstanceEnums.PolyEnum.ModelBinding.ModelBinders;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders
+namespace InstanceEnums.PolyEnum.ModelBinding.ModelBinderProviders;
+
+public class EnumModelBinderProvider : IModelBinderProvider
 {
-    public class EnumModelBinderProvider : IModelBinderProvider
+    public IModelBinder GetBinder(ModelBinderProviderContext context)
     {
-        public IModelBinder GetBinder(ModelBinderProviderContext context)
-        {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+        if (context == null) throw new ArgumentNullException(nameof(context));
 
-            var enumType = EnumRegistry.GetEnumBaseType(context.Metadata.ModelType);
+        var enumType = EnumRegistry.GetEnumBaseType(context.Metadata.ModelType);
 
-            if (enumType != null && enumType.IsSubclassOf(typeof(InstanceEnumBase))) return new EnumModelBinder();
+        if (enumType != null && enumType.IsSubclassOf(typeof(InstanceEnumBase))) return new EnumModelBinder();
 
-            enumType = EnumRegistry.GetEnumTypeThatIsParentOf(context.Metadata.ModelType);
+        enumType = EnumRegistry.GetEnumTypeThatIsParentOf(context.Metadata.ModelType);
 
-            return enumType != null ? new EnumInstanceModelBinder(context.Services) : null;
-        }
+        return enumType != null ? new EnumInstanceModelBinder(context.Services) : null;
     }
 }

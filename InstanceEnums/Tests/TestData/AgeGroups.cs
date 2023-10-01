@@ -1,21 +1,20 @@
 ﻿using TypedEnums;
 
-namespace InstanceEnums.testData
+namespace InstanceEnums.testData;
+
+public record AgeGroups : InstanceEnum<AgeGroups>
 {
-    public class AgeGroups : InstanceEnum<AgeGroups>
-    {
-        public interface ITodler : IAgeGroup { }
+    public interface IToddler : IAgeGroup { }
 
-        public interface IChild : IAgeGroup { }
+    public interface IChild : IAgeGroup { }
 
-        public interface IYoung : IAgeGroup { }
+    public interface IYoung : IAgeGroup { }
 
-        public interface IOld : IAgeGroup { }
+    public interface IOld : IAgeGroup { }
 
-        public interface IDead : IAgeGroup { }
+    public interface IDead : IAgeGroup { }
 
-        public interface INullRef : IAgeGroup { }
+    public interface INullRef : IAgeGroup { }
 
-        public interface IAgeGroup { }
-    }
+    public interface IAgeGroup { }
 }

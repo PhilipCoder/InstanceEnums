@@ -1,6 +1,5 @@
-﻿namespace InstanceEnums.PolyEnum
+﻿namespace InstanceEnums.PolyEnum;
+
+public abstract record InstanceEnumBase
 {
-    public abstract class InstanceEnumBase
-    {
-    }
 }

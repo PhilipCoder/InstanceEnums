@@ -1,17 +1,16 @@
 ﻿using InstanceEnums.Test.Web.Enums;
 
-namespace InstanceEnums.Test.Web.ServiceContracts
+namespace InstanceEnums.Test.Web.ServiceContracts;
+
+public interface IMedicationService : DiagnosisTypes.IDiagnosisType
 {
-    public interface IMedicationService : DiagnosisTypes.IDiagnosisType
-    {
-        string GetPrescription(AgeGroups.IAdult adult);
+    string GetPrescription(AgeGroups.IAdult ageGroup);
 
-        string GetPrescription(AgeGroups.IChild child);
+    string GetPrescription(AgeGroups.IChild ageGroup);
 
-        string GetPrescription(AgeGroups.ITeen teen);
+    string GetPrescription(AgeGroups.ITeen ageGroup);
 
-        string GetPrescription(AgeGroups.IToddler todler);
+    string GetPrescription(AgeGroups.IToddler ageGroup);
 
-        string GetPrescription(AgeGroups.IAgeGroup ageGroup);
-    }
+    string GetPrescription(AgeGroups.IAgeGroup ageGroup);
 }
