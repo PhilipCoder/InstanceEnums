@@ -97,8 +97,6 @@ Instance enums are records with nested interfaces. Every interface represent an 
 __DiagnosisTypes.cs__
 
 ```csharp
-using TypedEnums;
-
 public record DiagnosisTypes : InstanceEnum<DiagnosisTypes>
 {
     public interface IInsomnia : IDiagnosisType { }
@@ -112,8 +110,6 @@ public record DiagnosisTypes : InstanceEnum<DiagnosisTypes>
 __AgeGroups.cs__
 
 ```csharp
-using TypedEnums;
-
 public record AgeGroups : InstanceEnum<AgeGroups>
 {
     public interface IAdult : IAgeGroup { }
