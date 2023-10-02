@@ -243,3 +243,84 @@ public class CureController : ControllerBase
 When you run the service, you can now pass the values via Swagger to the controller and get the correct results:
 
 ![img](https://github.com/PhilipCoder/InstanceEnums/blob/master/Img/swaggerWithEnum.png?raw=true)
+
+
+## API Overview
+
+### Manually Creating An Enum Member Instance
+
+An instance enum can be created by the static "Get" method on the enum class. This will generate a dynamically generated class instance that inherits from the specified interface
+and cache it to be reused.
+
+```csharp
+var enumMemberInstance = DiagnosisTypes.Get<DiagnosisTypes.IDiagnosisType>();
+```
+
+### Converting Member Instance To String
+
+```csharp
+var enumMemberInstance = DiagnosisTypes.Get<DiagnosisTypes.IDiagnosisType>();
+Assert.Equal("IDiagnosisType", enumMemberInstance.ToString());
+````
+
+### Get Enum Int Value
+Just like enums, every enum member's value are incremented by 1, starting at 0. To get the value, the member can be converted to int:
+```csharp
+Assert.Equal(0, Convert.ToInt32(AgeGroups.Get<AgeGroups.IAdult>()));
+
+Assert.Equal(1, Convert.ToInt32(AgeGroups.Get<AgeGroups.ITeen>()));
+
+Assert.Equal(2, Convert.ToInt32(AgeGroups.Get<AgeGroups.IChild>()));
+
+Assert.Equal(3, Convert.ToInt32(AgeGroups.Get<AgeGroups.IToddler>()));
+```
+
+### Get Enum Member By Name
+
+To get a member instance by using the string name of the member, the Get method can also be used:
+
+```csharp
+var teenMemberInstance = AgeGroups.Get("ITeen");
+```
+
+### Get Enum Member By Value
+
+To get a member instance by using the int value of the member, the Get method can also be used:
+
+```csharp
+var teenMemberInstance = AgeGroups.Get(1);
+```
+
+### User Specified Name Or Value
+
+To Overwrite the name and values of the members, the InstanceEnum Attribute can be used:
+
+```csharp
+public record AgeGroups : InstanceEnum<AgeGroups>
+{
+    [InstanceEnum("Adult", 1)]
+    public interface IAdult : IAgeGroup { }
+
+    [InstanceEnum("Teen", 2)]
+    public interface ITeen : IAgeGroup { }
+
+    [InstanceEnum("Child", 3)]
+    public interface IChild : IAgeGroup { }
+
+    [InstanceEnum("Toddler", 4)]
+    public interface IToddler : IAgeGroup { }
+
+    [InstanceEnum("AgeGroup", 0)]
+    public interface IAgeGroup { }
+}
+```
+
+### Loading A Service Instance From Service Provider
+
+The required service for an enum can be loaded manually from the DI service provider instance. The "GetServiceForEnum" method can be used:
+
+```csharp
+var diagnosisMemberInstance = DiagnosisTypes.Get(1);
+
+var requiredServiceForDiagnosis = provider.GetServiceForEnum<IMedicationService>(diagnosisMemberInstance);
+```
