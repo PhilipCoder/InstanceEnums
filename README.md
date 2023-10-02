@@ -216,6 +216,14 @@ public class InsomniaMedicationService : DiagnosisTypes.IInsomnia, IMedicationSe
 }
 ```
 
+Of course we should register the services for dependency injection:
+
+```csharp
+builder.Services.AddTransient<IMedicationService, InsomniaMedicationService>();
+builder.Services.AddTransient<IMedicationService, HypertensionMedicationService>();
+builder.Services.AddTransient<IMedicationService, MedicationService>();
+```
+
 ### Injecting The Service Based On Enum In Controller
 
 You can now have the service as a parameter in your action, and the model binder will automatically bind the correct service instance according to the parameter passed via the request:
