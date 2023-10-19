@@ -2,7 +2,7 @@
 
 ## Problem
 
-Enums represent types. But with no backing type. They can only be base level reference structs. As soon as you see an enum in code, you know that code is not SOLID. 
+Enums represent types. But with no backing type. They can only be base level structs. As soon as you see an enum in code, you know that code is not SOLID. 
 Enums originate back to the C days, and I believe that they serve no place in modern object orientated language.
 
 Let's show a small example. You have to write a REST API endpoint that calculates medication and the amount of pills you have to take based on diagnosis and age. If you
